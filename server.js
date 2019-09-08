@@ -1,26 +1,25 @@
 const express = require('express'); //Importa e salva o express (o requiere primeiro interpreta (avalia, executa) e depois retorna a função express, que é salva na const express)
+
 const mongoose = require('mongoose')
+
 const requireDir = require('require-dir')
+
+const cors = require('cors');
 
 const app = express(); //Executa a função express
 
+app.use(express.json()); //Permite que os clientes enviem dados para a aplicação usando o formato JSON
+
+app.use(cors()); //Usa o módulo CORS para permitir o acesso público da nossa API; é possível passar parâmetros de configurações na função cors()
+
 mongoose.connect(
-  'mongodb://localhost:27017/first-project', 
+  'mongodb+srv://node-js-learning-user:pltADEaEQ6l6USCh@cluster-01-xxwdd.mongodb.net/node_js_learning?retryWrites=true&w=majority',
   {useNewUrlParser: true}
 );
 
 requireDir('./src/models');
 
-const Product = mongoose.model('Product');
-
-app.get('/', (req, res) => { //req: todas as informações da requisição feita pelo cliente | res: resposta da requisição dada pelo servidor
-  Product.create({
-    title:'React Native',
-    description: 'Build native apps with React',
-    url: 'https://github.com/facebook/react-native'
-  }); 
-  console.log('Product created!')  
-  return res.send('Product created!') //Quando o usuário fazer uma requisição na rota raiz (/) a res, é um Product created!
-})
+//Rotas:
+app.use('/api', require('./src/routes')); //Aceita todo tipo de requisição (use faz isso) na rota api, e a manda para o arquivo routes.js
 
 app.listen(3001); //A aplicação ouve a porta 3001 do navegador (localhost:3001)
